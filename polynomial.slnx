@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="polynomial/polynomial.vcxproj" Id="baae15b3-6665-40b8-ad0b-f1b3287fd494" />
+</Solution>
