@@ -43,3 +43,11 @@ poly poly::operator%(const poly& other) {
 	for (newD--; (!ans[newD]) && newD; newD--);
 	return poly(ans[std::slice(0,newD+1,1)]);
 }
+
+void poly::reverse() {
+	uint64_t i = 0, j = d;
+	while (i < j) {
+		std::swap(arg[i], arg[j]);
+		++i; --j;
+	}
+}

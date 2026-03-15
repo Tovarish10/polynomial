@@ -27,12 +27,6 @@ public:
 private:
 	uint64_t d;
 	v2 arg;
-	void reverse() {
-		uint64_t i = 0, j = d;
-		while (i < j) {
-			std::swap(arg[i], arg[j]);
-			++i; --j;
-		}
-	}
+	void reverse();
 };
 
