@@ -130,7 +130,12 @@
     <ClInclude Include="poly.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="poly.cpp" />
     <ClCompile Include="源.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.gitignore" />
+    <None Include="..\readme.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

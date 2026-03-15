@@ -6,14 +6,15 @@ using v2 = std::valarray<double>;
 
 class poly {
 public:
-	poly(v2&&,bool);
-	poly(std::initializer_list<double>,bool);
+	poly(v2&&,bool=false);
+	poly(std::initializer_list<double>,bool=false);
+	poly(const poly&) = default;
 
-	inline auto operator+(const poly&);
-	inline auto operator-(const poly&);
-	auto operator*(const poly&);
-	auto operator/(const poly&);
-	auto operator%(const poly&);
+	inline poly operator+(const poly&);
+	inline poly operator-(const poly&);
+	poly operator*(const poly&);
+	poly operator/(const poly&);
+	poly operator%(const poly&);
 
 	template<typename charT, typename traits>
 	friend std::basic_ostream<charT, traits>& \
@@ -35,25 +36,3 @@ private:
 	}
 };
 
-poly::poly(v2&& v, bool reverse = false) :arg(v), d(v.size()-1) { if (reverse)this->reverse(); }
-poly::poly(std::initializer_list<double> list, bool reverse = false) :poly(static_cast<v2>(list), reverse){}
-
-auto poly::operator+(const poly& other) {
-	return v2(arg + other.arg);
-}
-auto poly::operator-(const poly& other) {
-	return v2(arg - other.arg);
-}
-auto poly::operator*(const poly& other) {
-	uint64_t newD = d * other.d+1;
-	auto ans = v2(newD);
-	for (uint64_t i = 0; i <= d;i++) {
-		auto tmp = v2(other.d, newD).shift(-static_cast<int>(i));//可能的错误：若定义超过21亿元素的数组，则乘法无法正确计算
-		ans+=tmp*arg[i];
-	}
-	return v2(ans);
-}
-auto poly::operator/(const poly& other) {
-	if (d < other.d)return poly({ 0 });
-	
-}
