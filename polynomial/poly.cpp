@@ -1,47 +1,73 @@
 #include"poly.h"
-poly::poly(v2&& v, bool reverse) :arg(v), d(v.size() - 1) { if (reverse)this->reverse(); }
+poly::poly(v2&& v, bool reverse) :arg(std::move(v)), d(v.size() - 1) { if (reverse)this->reverse(); if (!(d||arg[0]))d = -1; }
 poly::poly(std::initializer_list<double> list, bool reverse) :poly(static_cast<v2>(list), reverse) {}
 
-poly poly::operator+(const poly& other) {
+poly poly::operator+(const poly& other)const {
 	return poly(arg + other.arg);
 }
-poly poly::operator-(const poly& other) {
+poly poly::operator-(const poly& other)const {
 	return poly(arg - other.arg);
 }
-poly poly::operator*(const poly& other) {
-	uint64_t newD = d * other.d + 1;
-	v2 ans(newD);
-	for (uint64_t i = 0; i <= d; i++) {
-		auto tmp = v2(other.d, newD).shift(-static_cast<int>(i));//可能的错误：若定义超过21亿元素的数组，则乘法无法正确计算
-		ans += tmp * arg[i];
-	}
-	return poly(std::move(ans));
+poly poly::operator*(const poly& other) const {
+	if (!((d + 1) && (other.d + 1))) { return poly({ 0 }); }
+    uint64_t newD = d + other.d;
+    v2 ans(newD + 1);
+    ans = 0.0; 
+    for (uint64_t i = 0; i <= d; ++i) {
+        double ai = arg[i];
+        for (uint64_t j = 0; j <= other.d; ++j) {
+            ans[i + j] += ai * other.arg[j];
+        }
+    }
+    return poly(std::move(ans));
 }
-poly poly::operator/(const poly& other) {
-	if (d < other.d)return poly({ 0 });
+poly poly::div(const poly& other, poly* r)const {
+	if (d < other.d) {
+		if (!(other.d + 1))throw std::exception("ZeroDivisionError");
+		if (r != nullptr)*r = *this;
+		return poly({ 0 });
+	}
 	uint64_t newD = d - other.d;
-	v2 ans(newD+1),oldarg(arg);
+	v2 ans(newD + 1), oldarg(arg);
 	// iterate from newD down to 0 (inclusive) without risking unsigned-wrap infinite-loop warning
-	for (uint64_t i = newD + 1; i-- > 0; ){
-		ans[i]=oldarg[i+other.d]/other.arg[other.d];
+	for (uint64_t i = newD + 1; i-- > 0; ) {
+		ans[i] = oldarg[i + other.d] / other.arg[other.d];
 		// subtract ans[i] * other shifted by i
-		for (uint64_t j = 0; j < other.d; ++j) {
+		for (uint64_t j = 0; j <= other.d; ++j) {
 			oldarg[i + j] -= ans[i] * other.arg[j];
 		}
 	}
+	if (r != nullptr) {
+		for (newD--; (!oldarg[newD]) && newD; newD--);
+		*r = poly(oldarg[std::slice(0, newD + 1, 1)]);
+	}
 	return poly(std::move(ans));
 }
-poly poly::operator%(const poly& other) {
-	if (d < other.d)return *this;
-	uint64_t newD = d - other.d;
-	v2 ans(arg);
-	for (uint64_t i = newD + 1; i-- > 0; ) {
-		for (uint64_t j = 0; j <= other.d; ++j) {
-			ans[i + j] -= (ans[i + other.d] / other.arg[other.d]) * other.arg[j];
-		}
+poly poly::operator/(const poly& other)const {
+	return div(other);
+}
+poly poly::operator%(const poly& other)const {
+	poly r;
+	div(other, &r);
+	return r;
+}
+
+poly gcd(const poly& a, const poly& b) {
+	if (!(a.d && b.d))return poly({ 1 });
+	if (!((a.d + 1) && (b.d + 1)))return poly({ 0 });
+	poly A,B;
+	if (a.d >= b.d) { B = a % b; A = b; }
+	else { B = b % a; A = a; }
+	while (B != poly{ 0 }) {
+		poly tmp = A % B;
+		A = std::move(B);
+		B = std::move(tmp);
 	}
-	for (newD--; (!ans[newD]) && newD; newD--);
-	return poly(ans[std::slice(0,newD+1,1)]);
+	A.arg /= A.arg[A.d];
+	return A;
+}
+poly lcm(const poly& a, const poly& b) {
+	return (a / gcd(a, b)) * b;
 }
 
 void poly::reverse() {
