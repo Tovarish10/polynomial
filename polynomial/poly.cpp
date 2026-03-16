@@ -51,7 +51,6 @@ poly poly::operator%(const poly& other)const {
 	div(other, &r);
 	return r;
 }
-
 poly gcd(const poly& a, const poly& b) {
 	if (!(a.d && b.d))return poly({ 1 });
 	if (!((a.d + 1) && (b.d + 1)))return poly({ 0 });
@@ -76,4 +75,7 @@ void poly::reverse() {
 		std::swap(arg[i], arg[j]);
 		++i; --j;
 	}
+}
+bool poly::operator==(const poly& other)const {
+	return (d == other.d) && (arg == other.arg).min();
 }

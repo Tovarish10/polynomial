@@ -18,9 +18,7 @@ public:
 	poly operator*(const poly&)const;
 	poly operator/(const poly&)const;
 	poly operator%(const poly&)const;
-	inline auto operator==(const poly& other)const { 
-		return (d==other.d)&&(arg == other.arg).min();
-	}
+	inline bool operator==(const poly&)const;
 
 	template<typename charT, typename traits>
 	friend std::basic_ostream<charT, traits>& \
