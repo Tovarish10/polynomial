@@ -3,10 +3,26 @@ poly::poly(v2&& v, bool reverse) :arg(std::move(v)), d(v.size() - 1) { if (rever
 poly::poly(std::initializer_list<double> list, bool reverse) :poly(static_cast<v2>(list), reverse) {}
 
 poly poly::operator+(const poly& other)const {
-	return poly(arg + other.arg);
+	if (!((d + 1) && (other.d + 1))) { return *this; }
+	if (d == other.d) return poly(arg + other.arg);
+	v2 ans = ((d >= other.d ? arg : other.arg));
+	if (d > other.d) {
+		for (uint64_t i = 0; i <= other.d; i++) {
+			ans[i] += other.arg[i];
+		}
+	}
+	else {
+		for (uint64_t i = 0; i <= d; i++) {
+			ans[i] +=arg[i];
+		}
+	}
+	return poly(std::move(ans));
+}
+poly poly::operator-()const {
+	return poly(-arg);
 }
 poly poly::operator-(const poly& other)const {
-	return poly(arg - other.arg);
+	return -other+*this;
 }
 poly poly::operator*(const poly& other) const {
 	if (!((d + 1) && (other.d + 1))) { return poly({ 0 }); }
@@ -67,6 +83,16 @@ poly gcd(const poly& a, const poly& b) {
 }
 poly lcm(const poly& a, const poly& b) {
 	return (a / gcd(a, b)) * b;
+}
+poly poly::diff(uint64_t stage)const {
+	if (!(d>=stage))return poly{0};
+	v2 ans = arg;
+	for (uint64_t j = 0; j < stage; j++) {
+		for (uint64_t i = 0; i <= d; i++) {
+			ans[i] *= (i-j);
+		}
+	}
+	return poly(ans[std::slice(stage, d - stage + 1, 1)]);
 }
 
 void poly::reverse() {

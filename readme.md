@@ -12,7 +12,8 @@
 	- `operator*`
 	- `operator/`
 	- `operator%`
--`operator==`:判断两个多项式是否相等
+- `operator==`:判断两个多项式是否相等
 - `operator<<(std::basic_ostream<T1,T2>&,const poly&)`: 重载输出流
 - `poly.deg()`:获取多项式的次数
 - `gcd(poly,poly)` `lcm(poly,poly)`:多项式的最大公因式和最小公倍式
+- `poly::diff(uint=1)`:多项式的n阶导数

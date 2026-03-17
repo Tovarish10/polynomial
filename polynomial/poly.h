@@ -13,8 +13,9 @@ public:
 	poly& operator=(const poly&)= default;
 	poly& operator=(poly&&)noexcept = default;
 
-	inline poly operator+(const poly&)const;
-	inline poly operator-(const poly&)const;
+	poly operator+(const poly&)const;
+	poly operator-()const;
+	poly operator-(const poly&)const;
 	poly operator*(const poly&)const;
 	poly operator/(const poly&)const;
 	poly operator%(const poly&)const;
@@ -31,10 +32,10 @@ public:
 	poly div(const poly&, poly* = nullptr)const;
 	friend poly gcd(const poly&,const poly&);
 	friend poly lcm(const poly&, const poly&);
+	poly diff(uint64_t=1)const;
 private:
 	uint64_t d;
 	v2 arg;
 	void reverse();
 	poly() :d(0), arg({0}) {}
 };
-
