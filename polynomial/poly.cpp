@@ -54,8 +54,9 @@ poly poly::div(const poly& other, poly* r)const {
 		}
 	}
 	if (r != nullptr) {
-		for (newD--; (!oldarg[newD]) && newD; newD--);
-		*r = poly(oldarg[std::slice(0, newD + 1, 1)]);
+		auto dr = other.d;
+		for (; (!oldarg[dr]) && dr; dr--);
+		*r = poly(oldarg[std::slice(0, dr + 1, 1)]);
 	}
 	return poly(std::move(ans));
 }
