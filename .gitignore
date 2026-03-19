@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 #隐藏测试用源文件
 /polynomial/源.cpp
+*.diagsession
