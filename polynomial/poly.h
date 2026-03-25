@@ -19,6 +19,7 @@ public:
 	poly operator*(const poly&)const;
 	poly operator/(const poly&)const;
 	poly operator%(const poly&)const;
+	double operator()(double)const;
 	inline bool operator==(const poly&)const;
 
 	template<typename charT, typename traits>

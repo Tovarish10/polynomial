@@ -37,7 +37,11 @@ poly poly::div(const poly& other, poly* r)const {
   // small epsilon to treat tiny values as zero and improve numerical stability
 	// guard against division by (near) zero polynomial
 	if (!(other.d + 1) || std::abs(other.arg[other.d]) < EPS) {
+#ifdef _MSC_VER
 		throw std::exception("ZeroDivisionError");
+#else
+		throw std::exception();
+#endif
 	}
 	// if degree of dividend is smaller, quotient is zero and remainder is dividend
 	if (d < other.d) {
@@ -123,4 +127,13 @@ void poly::reverse() {
 }
 bool poly::operator==(const poly& other)const {
 	return (d == other.d) && (arg == other.arg);
+}
+double poly::operator()(double num)const {
+	double ans = 0;
+	double num_time(num);
+	for (auto&& i : arg) {
+		ans += i * num_time;
+		num_time *= num;
+	}
+	return ans;
 }
