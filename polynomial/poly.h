@@ -29,7 +29,7 @@ public:
 		return os;
 	}
 
-	static constexpr double EPS = 1e-35;
+	inline static double EPS = 1e-15;
 	inline auto deg()const{ return d; }
 	poly div(const poly&, poly* = nullptr)const;
 	friend poly gcd(const poly&,const poly&);
